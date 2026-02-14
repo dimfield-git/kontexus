@@ -1,4 +1,5 @@
 # kontexus
+<img width="1014" height="373" alt="Kontexusforgithub" src="https://github.com/user-attachments/assets/774203e9-49f1-451e-8328-abb0ce24c5a8" />
 
 LLM Context Manager — manage, version, and grade context handoff documents for cross-LLM and cross-chat continuity.
 
