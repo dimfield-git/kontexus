@@ -27,10 +27,10 @@ app = typer.Typer(help="kontexus — LLM Context Manager")
 def add(
     prompt: str = typer.Argument(..., help="The prompt you gave the LLM"),
     summary: str = typer.Argument(..., help="The context summary generated"),
-    source_chat: str = typer.Option(None, help="Name of source chat"),
-    llm_used: str = typer.Option("Claude", help="Which LLM generated this"),
-    tier: Tier = typer.Option(None, help="Initial tier rating (S/A/B/F)"),
-    comment: str = typer.Option(None, help="Optional comment"),
+    source_chat: str = typer.Option(None, "-s", "--source-chat", help="Name of source chat"),
+    llm_used: str = typer.Option("Claude", "-l", "--llm-used", help="Which LLM generated this"),
+    tier: Tier = typer.Option(None, "-t", "--tier", help="Initial tier rating (S/A/B/F)"),
+    comment: str = typer.Option(None, "-c", "--comment", help="Optional comment"),
 ):
     """Add a new context entry."""
     data = ContextCreate(
