@@ -103,7 +103,7 @@ def export_context(context_id: int, fmt: str = "markdown") -> Optional[str]:
         return (
             f"{entry.prompt}\n\n"
             f"{entry.summary}\n\n"
-            f"Tier: {entry.tier or 'Unrated'}"
+            f"Tier: {entry.tier.value if entry.tier else 'Unrated'}"
         )
 
     # Default: markdown
@@ -111,7 +111,7 @@ def export_context(context_id: int, fmt: str = "markdown") -> Optional[str]:
         f"# {entry.source_chat or 'Context'}\n\n"
         f"**Prompt:**\n{entry.prompt}\n\n"
         f"**Summary:**\n{entry.summary}\n\n"
-        f"**Tier:** {entry.tier or 'Unrated'}  \n"
+        f"**Tier:** {entry.tier.value if entry.tier else 'Unrated'}  \n"
         f"**LLM:** {entry.llm_used}  \n"
         f"**Created:** {entry.created}"
     )

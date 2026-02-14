@@ -42,7 +42,7 @@ def add(
         comment=comment,
     )
     entry = add_context(data)
-    typer.echo(f"Added context #{entry.id} (Tier: {entry.tier or 'Unrated'})")
+    typer.echo(f"Added context #{entry.id} (Tier: {entry.tier.value if entry.tier else 'Unrated'})")
 
 @app.command("list")
 def list_cmd(
@@ -54,7 +54,7 @@ def list_cmd(
         typer.echo("No contexts found.")
         return
     for e in entries:
-        typer.echo(f"#{e.id}  [{e.tier or '-'}]  {e.source_chat or 'Untitled'}  ({e.created.strftime('%Y-%m-%d')})")
+        typer.echo(f"#{e.id}  [{e.tier.value if e.tier else '-'}]  {e.source_chat or 'Untitled'}  ({e.created.strftime('%Y-%m-%d')})")
 
 @app.command()
 def view(context_id: int = typer.Argument(..., help="Context ID to view")):
@@ -66,7 +66,7 @@ def view(context_id: int = typer.Argument(..., help="Context ID to view")):
     typer.echo(f"ID:          {entry.id}")
     typer.echo(f"Source:      {entry.source_chat or 'N/A'}")
     typer.echo(f"LLM:         {entry.llm_used}")
-    typer.echo(f"Tier:        {entry.tier or 'Unrated'}")
+    typer.echo(f"Tier:        {entry.tier.value if entry.tier else 'Unrated'}")
     typer.echo(f"Comment:     {entry.comment or 'N/A'}")
     typer.echo(f"Created:     {entry.created}")
     typer.echo(f"\n--- Prompt ---\n{entry.prompt}")
@@ -83,7 +83,7 @@ def rate(
     if not entry:
         typer.echo(f"Context #{context_id} not found.")
         raise typer.Exit(code=1)
-    typer.echo(f"Context #{entry.id} rated as {entry.tier}")
+    typer.echo(f"Context #{entry.id} rated as {entry.tier.value if entry.tier else 'Unrated'}")
 
 @app.command()
 def search(query: str = typer.Argument(..., help="Search keyword")):
@@ -94,7 +94,7 @@ def search(query: str = typer.Argument(..., help="Search keyword")):
         return
     typer.echo(f"Found {len(entries)} match(es):")
     for e in entries:
-        typer.echo(f"  #{e.id}  [{e.tier or '-'}]  {e.source_chat or 'Untitled'}")
+        typer.echo(f"  #{e.id}  [{e.tier.value if e.tier else '-'}]  {e.source_chat or 'Untitled'}")
 
 @app.command()
 def export(
