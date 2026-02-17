@@ -42,12 +42,12 @@ def list_contexts(tier: Optional[Tier] = None) -> list[Context]:
     with get_db() as db:
         if tier:
             rows = db.execute(
-                "SELECT * FROM contexts WHERE tier = ? ORDER BY created DESC",
+                "SELECT * FROM contexts WHERE tier = ? ORDER BY created DESC, id DESC",
                 (tier.value,),
             ).fetchall()
         else:
             rows = db.execute(
-                "SELECT * FROM contexts ORDER BY created DESC"
+                "SELECT * FROM contexts ORDER BY created DESC, id DESC"
             ).fetchall()
     return [Context(**dict(row)) for row in rows]
 
@@ -83,7 +83,7 @@ def search_contexts(query: str) -> list[Context]:
             """
             SELECT * FROM contexts
             WHERE prompt LIKE ? OR summary LIKE ?
-            ORDER BY created DESC
+            ORDER BY created DESC, id DESC
             """,
             (f"%{query}%", f"%{query}%"),
         ).fetchall()
