@@ -20,19 +20,41 @@ from kontexus.core import (
 )
 from kontexus.models import ContextCreate, Tier
 
+import pyperclip
+
 app = typer.Typer(help="kontexus — LLM Context Manager")
 
 
 @app.command()
 def add(
-    prompt: str = typer.Argument(..., help="The prompt you gave the LLM"),
-    summary: str = typer.Argument(..., help="The context summary generated"),
+    prompt: str = typer.Argument("", help="The prompt you gave the LLM"),
+    summary: str = typer.Argument("", help="The context summary generated"),
+    prompt_clip: bool = typer.Option(False, "--prompt-clip", "-pc", help="Read prompt from clipboard"),
+    summary_clip: bool = typer.Option(False, "--summary-clip", "-sc", help="Read summary from clipboard"),
     source_chat: str = typer.Option(None, "-s", "--source-chat", help="Name of source chat"),
     llm_used: str = typer.Option("Claude", "-l", "--llm-used", help="Which LLM generated this"),
     tier: Tier = typer.Option(None, "-t", "--tier", help="Initial tier rating (S/A/B/F)"),
     comment: str = typer.Option(None, "-c", "--comment", help="Optional comment"),
 ):
     """Add a new context entry."""
+    if prompt_clip:
+        prompt = pyperclip.paste()
+        if not prompt.strip():
+            typer.echo("Error: clipboard is empty (--prompt-clip).")
+            raise typer.Exit(code=1)
+    elif not prompt:
+        typer.echo("Error: provide PROMPT as argument or use --prompt-clip.")
+        raise typer.Exit(code=1)
+
+    if summary_clip:
+        summary = pyperclip.paste()
+        if not summary.strip():
+            typer.echo("Error: clipboard is empty (--summary-clip).")
+            raise typer.Exit(code=1)
+    elif not summary:
+        typer.echo("Error: provide SUMMARY as argument or use --summary-clip.")
+        raise typer.Exit(code=1)
+
     data = ContextCreate(
         prompt=prompt,
         summary=summary,

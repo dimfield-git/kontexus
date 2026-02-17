@@ -6,6 +6,8 @@ from kontexus.cli import app
 from kontexus.core import add_context
 from kontexus.models import ContextCreate, Tier
 
+from unittest.mock import patch
+
 runner = CliRunner()
 
 
@@ -177,3 +179,46 @@ class TestMergeCommand:
         result = runner.invoke(app, ["merge", str(id_a), "9999"])
         assert result.exit_code == 1
         assert "not found" in result.output
+
+
+class TestAddClipboard:
+
+    @patch("kontexus.cli.pyperclip.paste", return_value="Clipped prompt")
+    def test_prompt_from_clipboard(self, mock_paste):
+        result = runner.invoke(app, ["add", "-pc", "", "My summary"])
+        assert result.exit_code == 0
+        assert "Added context #" in result.output
+
+    @patch("kontexus.cli.pyperclip.paste", return_value="Clipped summary")
+    def test_summary_from_clipboard(self, mock_paste):
+        result = runner.invoke(app, ["add", "My prompt", "-sc"])
+        assert result.exit_code == 0
+        assert "Added context #" in result.output
+
+    @patch("kontexus.cli.pyperclip.paste", return_value="Clipped content")
+    def test_both_from_clipboard(self, mock_paste):
+        result = runner.invoke(app, ["add", "-pc", "-sc"])
+        assert result.exit_code == 0
+        assert "Added context #" in result.output
+
+    @patch("kontexus.cli.pyperclip.paste", return_value="")
+    def test_empty_clipboard_prompt(self, mock_paste):
+        result = runner.invoke(app, ["add", "-pc", "", "Summary"])
+        assert result.exit_code == 1
+        assert "clipboard is empty" in result.output
+
+    @patch("kontexus.cli.pyperclip.paste", return_value="")
+    def test_empty_clipboard_summary(self, mock_paste):
+        result = runner.invoke(app, ["add", "Prompt", "-sc"])
+        assert result.exit_code == 1
+        assert "clipboard is empty" in result.output
+
+    def test_no_prompt_no_flag(self):
+        result = runner.invoke(app, ["add", "", "Summary"])
+        assert result.exit_code == 1
+        assert "provide PROMPT" in result.output
+
+    def test_no_summary_no_flag(self):
+        result = runner.invoke(app, ["add", "Prompt", ""])
+        assert result.exit_code == 1
+        assert "provide SUMMARY" in result.output

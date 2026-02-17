@@ -50,11 +50,23 @@ kontexus add "Your prompt" "The summary" -s "Chat name" -l GPT -t A -c "My notes
 | `-l` | `--llm-used` | Which LLM generated it | Claude |
 | `-t` | `--tier` | Rating: S, A, B, or F | Unrated |
 | `-c` | `--comment` | Your notes | None |
+| `-pc` | `--prompt-clip` | Read prompt from clipboard | Off |
+| `-sc` | `--summary-clip` | Read summary from clipboard | Off |
 
 For long prompts or summaries, write them to files and use command substitution:
 
 ```bash
 kontexus add "$(cat prompt.txt)" "$(cat summary.txt)" -s "Session name" -l GPT -t A
+```
+### Add from clipboard
+
+Copy text to your clipboard, then:
+```bash
+# Summary from clipboard, prompt typed
+kontexus add "My prompt" -sc -s "Chat name" -t A
+
+# Both from clipboard
+kontexus add -pc -sc -s "Chat name"
 ```
 
 ### List all entries
